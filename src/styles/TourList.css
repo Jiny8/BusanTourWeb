@@ -1,0 +1,28 @@
+body {
+  background: #cfd8dc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.work-stage {
+  display: block;
+  margin-top: 100px;
+  width: 600px;
+  height: 800px;
+  background: white;
+  overflow: auto;
+}
+
+.work-stage__box {
+  height: 3000px;
+}
+
+.work-stage__box div {
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  margin: 5px;
+  border: 1px solid;
+  position: static;
+}
