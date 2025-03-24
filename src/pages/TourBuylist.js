@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { Button, Text, useState, number, Input, style } from "react";
 import {
+  BrowserRouter,
+  Routes,
+  Route,
   useParams,
   useNavigate,
+  Link,
 } from "react-router-dom";
 
 function TourBuylist({
@@ -49,7 +53,7 @@ function TourBuylist({
             navigate("/Mypage");
           }}
         >
-          삭제
+          삭제 ㅇㅇ
         </button>
         <button onClick={() => navigate("/Mypage")}>목록</button>
       </>
