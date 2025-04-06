@@ -31,7 +31,6 @@ function MypageSet({ member, setMember, position }) {
       bank: bank,
       account: account,
     };
-    console.log(tmp);
     setMember({ ...tmp });
   };
 

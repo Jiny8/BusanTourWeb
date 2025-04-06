@@ -60,7 +60,6 @@ function Login({ member, position, setPosition }) {
           return res.json();
         })
         .then((res) => {
-          console.log(res)
           if (ID == res.id && PW == res.pw) {
             //return alert은 return 이후는 실행되지않으니, setPosition("admin");은 그 전에입력해줄것!
             setPosition("1");
