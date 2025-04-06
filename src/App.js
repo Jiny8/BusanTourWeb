@@ -22,11 +22,11 @@ import './index.css';
 
 export default function App() {
   const [data, setData] = useState([
-    { idx: 0, title: "게시글제목000", contents: "내용000", createdBy: "가", date: "2024-01-01" },
-    { idx: 11, title: "게시글제목001", contents: "내용001", createdBy: "나", date: "2024-03-15" },
-    { idx: 2, title: "게시글제목002", contents: "내용002", createdBy: "다", date: "2024-03-22" },
-    { idx: 3, title: "게시글제목003", contents: "내용003", createdBy: "라", date: "2024-04-08" },
-    { idx: 4, title: "게시글제목004", contents: "내용004", createdBy: "마", date: "2024-05-15" },
+    { idx: 0, title: "게시글제목000", content: "내용000", createdBy: "가", date: "2024-01-01" },
+    { idx: 11, title: "게시글제목001", content: "내용001", createdBy: "나", date: "2024-03-15" },
+    { idx: 2, title: "게시글제목002", content: "내용002", createdBy: "다", date: "2024-03-22" },
+    { idx: 3, title: "게시글제목003", content: "내용003", createdBy: "라", date: "2024-04-08" },
+    { idx: 4, title: "게시글제목004", content: "내용004", createdBy: "마", date: "2024-05-15" },
   ]);
   const [tour, setTour] = useState([
     {
@@ -206,25 +206,25 @@ export default function App() {
       idx4: 0,
       name: "김*영",
       title: "환불요청",
-      text: "환불요청합니다.",
+      content: "환불요청합니다.",
     },
     {
       idx4: 1,
       name: "전*준",
       title: "항공권 검색",
-      text: "제주항공에서 예약 검색이 되지 않습니다.",
+      content: "제주항공에서 예약 검색이 되지 않습니다.",
     },
     {
       idx4: 2,
       name: "박*진",
       title: "티켓 재발급",
-      text: "티켓 재발급하려면 어떻게하면 될까요??",
+      content: "티켓 재발급하려면 어떻게하면 될까요??",
     },
   ]);
 
   const [notice, setNotice] = useState({
-    tel: "070 - 7777 - 7777",
-    officehours: "09:00 ~ 18:00",
+    tel: "070-7777-7777",
+    officehours: "09:00~18:00",
     name: "(주)부산어때",
     address: "부산시 연제구 연산동",
     corporatenumber: "606-81-05296",
@@ -245,7 +245,7 @@ export default function App() {
       DateTime: "2024년 2월 24일 토요일 / 14:00~19:00 ",
       place: "용호 별빛공원",
       text3: "- 요금 : 무료",
-      contents:
+      content:
         "연희집단 The 광대(도는 놈 뛰는 놈 나는 놈), 판소리(소리꾼 김소진), 매직 벌룬쇼, 대붓 퍼포먼스, 한국무용, 대- 형 연날리기(스턴트연, 전통연), [본행사] : 개막식, LED달집 점등, 풍물 한마당",
       text6:
         "- 체험‧전시 : 영산 줄다리기, 풍물패 길놀이, 소원지 빛 터널, 대형 LED 보름달, 소원지 쓰기, 전통 민속놀이, 전통공예 만들기 체험, 푸드트럭 등",
@@ -262,7 +262,7 @@ export default function App() {
       title: "2024 제25회 수영전통달집놀이",
       DateTime: "2024.2.24.(토) 14:00~18:20",
       place: "광안리해변(이안테라디움광안 O/T 앞)",
-      contents: "소망포 새해소망쓰기, 소망연‧부적 판매,줄타기공연, 수영야류, 좌수영어방놀이, 수영농청놀이, 지신밟기,[본행사] : 고사지내기, 달집 태우기(17:58)",
+      content: "소망포 새해소망쓰기, 소망연‧부적 판매,줄타기공연, 수영야류, 좌수영어방놀이, 수영농청놀이, 지신밟기,[본행사] : 고사지내기, 달집 태우기(17:58)",
       organizedBy: "수영구 / 주관 : (사)수영고적민속예술보존협회",
     },
     {
@@ -289,8 +289,6 @@ export default function App() {
             <Layout
               member={member}
               position={position}
-              setPosition={setPosition}
-              notice={notice}
             />
           }
         >
@@ -400,14 +398,7 @@ export default function App() {
           <Route
             path="TourList"
             element={
-              <TourList
-                tour={tour}
-                setTour={setTour}
-                mytour={mytour}
-                setMyTour={setMyTour}
-                alltour={alltour}
-                setAlltour={setAlltour}
-              />
+              <TourList alltour={alltour} />
             }
           />
           <Route path="*" element={<NoPage />} />

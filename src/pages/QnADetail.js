@@ -20,7 +20,7 @@ function QnADetail({ qna, setQna }) {
       <h1>{tmp.title}</h1>
       <hr />
       <p>{tmp.name}</p>
-      <p>{tmp.text}</p>
+      <p>{tmp.content}</p>
       <>
         <button onClick={() => navigate("/QnA/up/" + tmp.idx4)}>수정</button>
         <button

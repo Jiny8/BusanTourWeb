@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 
 function QnAWrite({ setData, data }) {
   const navigate = useNavigate();
-  const [Title, setTitle] = useState("");
-  const [Name, setName] = useState("");
-  const [Text, setText] = useState("");
+  const [title, setTitle] = useState("");
+  const [name, setName] = useState("");
+  const [text, setText] = useState("");
   //onClick에 여러기능 실행시, 한 {}안에 넣어주고 한줄끝마다 ;를 넣어 구분시켜줘야함//
 
   const Add = () => {
@@ -14,20 +14,11 @@ function QnAWrite({ setData, data }) {
       ...data,
       {
         idx: data.length,
-        title: Title,
-        contents: Text,
-        createdBy: Name
+        title: title,
+        content: content,
+        createdBy: name
       }
     ]);
-    /*{console.log([
-      ...data,
-      {
-        idx: data.length + 1,
-        title: Title,
-        contents: Text,
-        createdBy: Name
-      }
-    ]);}*/
   };
 
   return (
@@ -39,7 +30,7 @@ function QnAWrite({ setData, data }) {
           onChange={(e) => {
             setTitle(e.target.value);
           }}
-          value={Title}
+          value={title}
           placeholder={"제목"}
         />
       </p>
@@ -49,24 +40,24 @@ function QnAWrite({ setData, data }) {
           onChange={(e) => {
             setName(e.target.value);
           }}
-          value={Name}
+          value={name}
           placeholder={"작성자"}
         />
       </p>
       <p>
         내용
         <textarea
-          type={Text}
+          type="text"
           onChange={(e) => {
             setText(e.target.value);
           }}
-          value={Text}
+          value={text}
           placeholder={"내용"}
         />
       </p>
       <button
         onClick={() => {
-          alert(Title + "//" + Name + "//" + Text + " 를 저장하였습니다.");
+          alert(title + "//" + name + "//" + text + " 를 저장하였습니다.");
           Add();
           navigate("/Reviews");
         }}

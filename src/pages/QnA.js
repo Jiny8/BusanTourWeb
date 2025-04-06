@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import "../styles/QnA.css";
 
 function QnA({ qna, setQna }) {
   const btnStyle = {
     color: "white",
-    background: "#6CC0FF",
+    background: "#22B8CF",
     padding: ".3rem .6rem",
     margin: "2rem",
-    border: "1px #6CC0FF",
+    border: "1px #22B8CF",
     borderRadius: ".40rem",
     fontSize: "1rem",
   };
@@ -15,22 +16,22 @@ function QnA({ qna, setQna }) {
     padding: "0rem 2rem",
   };
 
-  const [Title, setTitle] = useState("");
-  const [Name, setName] = useState("");
-  const [Text, setText] = useState("");
+  const [title, setTitle] = useState("");
+  const [name, setName] = useState("");
+  const [content, setContent] = useState("");
   const Add = () => {
     setQna([
       ...qna,
       {
         idx4: qna.length,
-        name: Name,
-        title: Title,
-        text: Text,
+        name: name,
+        title: title,
+        content: content,
       },
     ]);
     setTitle("");
     setName("");
-    setText("");
+    setContent("");
   };
   const [top5, setTop5] = useState([
     {
@@ -62,64 +63,72 @@ function QnA({ qna, setQna }) {
   const navigate = useNavigate();
   return (
     <>
-      <h3>★자주 묻는 질문 Top5 ★ </h3>
-      <ol>
-        <li
-          onClick={() => {
-            let tmp = top5;
-            tmp[0] = { ...top5[0], as: !top5[0].as };
-            setTop5([...tmp]);
-          }}
-        >
-          여행 취소/환불 문의
-        </li>
-        <p>{top5[0].as && <p>{top5[0].answer}</p>}</p>
-        <li
-          onClick={() => {
-            let tmp = top5;
-            tmp[1] = { ...top5[1], as: !top5[1].as };
-            setTop5([...tmp]);
-          }}
-        >
-          결제방법
-        </li>
-        <p>{top5[1].as && <p>{top5[1].answer}</p>}</p>
+      <div className="faq-inquiry-container unified-style">
+        <section className="faq-section">
+          <h2 className="section-title">자주 묻는 질문 Top5</h2>
+          <ol className="faq-list">
+            <li
+              onClick={() => {
+                let tmp = top5;
+                tmp[0] = { ...top5[0], as: !top5[0].as };
+                setTop5([...tmp]);
+              }}
+              style={{ cursor: "pointer" }}
+            >
+              여행 취소/환불 문의
+              <p>{top5[0].as && <p>{top5[0].answer}</p>}</p>
+            </li>
 
-        <li
-          onClick={() => {
-            let tmp = top5;
-            tmp[2] = { ...top5[2], as: !top5[2].as };
-            setTop5([...tmp]);
-          }}
-        >
-          e-ticket 출력{" "}
-        </li>
-        <p>{top5[2].as && <p>{top5[2].answer}</p>}</p>
+            <li
+              onClick={() => {
+                let tmp = top5;
+                tmp[1] = { ...top5[1], as: !top5[1].as };
+                setTop5([...tmp]);
+              }}
+              style={{ cursor: "pointer" }}
+            >
+              결제방법
+              <p>{top5[1].as && <p>{top5[1].answer}</p>}</p>
+            </li>
+            <li
+              onClick={() => {
+                let tmp = top5;
+                tmp[2] = { ...top5[2], as: !top5[2].as };
+                setTop5([...tmp]);
+              }}
+              style={{ cursor: "pointer" }}
+            >
+              e-ticket 출력
+              <p>{top5[2].as && <p>{top5[2].answer}</p>}</p>
+            </li>
+            <li
+              onClick={() => {
+                let tmp = top5;
+                tmp[3] = { ...top5[3], as: !top5[3].as };
+                setTop5([...tmp]);
+              }}
+              style={{ cursor: "pointer" }}
+            >
+              항공시간 및 출발지 변경이 가능할까요?
+              <p>{top5[3].as && <p>{top5[3].answer}</p>}</p>
+            </li>
+            <li
+              onClick={() => {
+                let tmp = top5;
+                tmp[4] = { ...top5[4], as: !top5[4].as };
+                setTop5([...tmp]);
+              }}
+              style={{ cursor: "pointer" }}
+            >
+              기존예약 고객정보 및 날짜 변경
+              <p>{top5[4].as && <p>{top5[4].answer}</p>}</p>
+            </li>
+          </ol>
+        </section>
 
-        <li
-          onClick={() => {
-            let tmp = top5;
-            tmp[3] = { ...top5[3], as: !top5[3].as };
-            setTop5([...tmp]);
-          }}
-        >
-          항공시간 및 출발지 변경이 가능할까요?{" "}
-        </li>
-        <p>{top5[3].as && <p>{top5[3].answer}</p>}</p>
-        <li
-          onClick={() => {
-            let tmp = top5;
-            tmp[4] = { ...top5[4], as: !top5[4].as };
-            setTop5([...tmp]);
-          }}
-        >
-          기존예약 고객정보 및 날짜 변경
-        </li>
-        <p>{top5[4].as && <p>{top5[4].answer}</p>}</p>
-      </ol>
-      <hr color="#6CC0FF" />
-      <h3>○문의게시판○</h3>
-      {console.log(qna)}
+        <hr className="divider" />
+      </div>
+      <h3>○ 문의게시판 ○</h3>
       <ul>
         {qna.map((i) => (
           <li key={i.idx4}>
@@ -136,7 +145,7 @@ function QnA({ qna, setQna }) {
           onChange={(e) => {
             setTitle(e.target.value);
           }}
-          value={Title}
+          value={title}
           placeholder={"제목"}
         />
       </h4>
@@ -146,25 +155,25 @@ function QnA({ qna, setQna }) {
           onChange={(e) => {
             setName(e.target.value);
           }}
-          value={Name}
+          value={name}
           placeholder={"작성자"}
         />
       </h4>
       <h4 style={btnStyleInput}>
         내 용
         <textarea
-          type={Text}
+          type="text"
           onChange={(e) => {
-            setText(e.target.value);
+            setContent(e.target.value);
           }}
-          value={Text}
+          value={content}
           placeholder={"내용"}
         />
       </h4>
       <button
         style={btnStyle}
         onClick={() => {
-          alert(Title + "//" + Name + "//" + Text + " 를 저장하였습니다.");
+          alert(title + "//" + name + "//" + content + " 를 저장하였습니다.");
           Add();
           navigate("/QnA");
         }}

@@ -4,47 +4,14 @@ import { Outlet, useNavigate } from "react-router-dom";
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import titleImage from "../assets/images/title.png"
-const Layout = ({ member, position, setPosition, notice }) => {
-  const btnStyle = {
-    color: "black",
-    background: "white",
-    padding: ".2rem .7rem",
-    margin: ".3rem",
-    border: "1px #6CC0FF",
-    borderRadius: ".40rem",
-    font: "1rem italic bold",
-    lineHeight: 1,
-  };
-  const btnStyleLogin = {
-    float: "right",
-    color: "white",
-    background: "#6CC0FF",
-    padding: ".3rem 1rem",
-    marginTop: "1rem",
-    marginRight: "3rem",
-    border: "1px #6CC0FF",
-    borderRadius: ".40rem",
-    fontSize: "1rem",
-    lineHeight: 1.5,
-  };
-  const btnStyleHome = {
-    textalign: "center",
-    color: "#6CC0FF",
-    background: "white",
-    padding: "0.1rem 3rem",
-    margin: "0.5rem",
-    border: "1px #6CC0FF",
-    borderRadius: ".40rem",
-    font: "2.5rem italic bold",
-    lineHeight: 1,
-  };
-
+const Layout = ({ member, position }) => {
+  
   const CategoriesBlock = styled.div`  
     display: flex;
     justify-content: center;   
     margin: 0 auto;  
-    padding-top: 10px; /* 위쪽 패딩 */
-    padding-bottom: 10px; /* 아래쪽 패딩 */
+    padding-top: 10px;
+    padding-bottom: 10px;
     @media screen and (max-width: 768px) {    
       width: 100%;    
       overflow-x: auto;  
@@ -126,11 +93,11 @@ const Layout = ({ member, position, setPosition, notice }) => {
               logout();
             }}
           >
-            <span>{member[position].ID == "" ? "로그인" : "로그아웃"}</span>
+            {member[position].ID == "" ? "로그인" : "로그아웃"}
           </button>
 
           <span
-            style={{ float: "right", padding: "0.5rem", fontWeight: "bold" }}
+            style={{ float: "right", padding: "1.5rem 1rem 1.5rem 1.5rem", fontWeight: "bold" }}
           >
             {member[position].name}
           </span>
@@ -148,23 +115,88 @@ const Layout = ({ member, position, setPosition, notice }) => {
       </div>
       <Outlet />
       {/* <Outlet /> 의 아래 작성된 내용은 홈페이지의 하단*/}
-      <hr color="#6CC0FF" />
-      <ul>
-        <h3>
-          대표전화 {notice.tel}
-          {" ( "}콜센터 {notice.officehours}
-          {"  )"}
-        </h3>
-        <p>
-          사업자 : {notice.name}
-          {"  ("} {notice.corporatenumber}
-          {"  )"}
-        </p>
-        <p> 소재지 : {notice.address}</p>
-        <p> 입금계좌 : {notice.account}</p>
-      </ul>
+      <footer style={styles.footer}>
+      <div style={styles.container}>
+        <div style={styles.infoSection}>
+          <h4 style={styles.heading}>회사 정보</h4>
+          <p>대표: 박효진</p>
+          <p>주소: 부산시 연제구 연제동</p>
+        </div>
+        <div style={styles.contactSection}>
+          <h4 style={styles.heading}>문의</h4>
+          <p>전화: 070-1235-5678</p>
+          <p>이메일: busan@example.com</p>
+        </div>
+        <div style={styles.copyright}>
+          <p>&copy; 2025 Company Name. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
     </>
   );
+};
+
+const btnStyleLogin = {
+  float: "right",
+  color: "white",
+  background: "#22B8CF",
+  padding: ".3rem 1rem",
+  marginTop: "1rem",
+  marginRight: "3rem",
+  border: "1px #22B8CF",
+  borderRadius: ".40rem",
+  fontSize: "1rem",
+  lineHeight: 1.5,
+  cursor: "pointer"
+};
+
+const btnStyleHome = {
+  textalign: "center",
+  color: "#22B8CF",
+  background: "white",
+  padding: "0.1rem 3rem",
+  margin: "0.5rem",
+  border: "1px #22B8CF",
+  borderRadius: ".40rem",
+  font: "2.5rem italic bold",
+  lineHeight: 1,
+  cursor: "pointer",
+};
+
+const styles = {
+  footer: {
+    backgroundColor: "#282c34",
+    color: "#fff",
+    padding: "20px 0",
+    textAlign: "center",
+    fontSize: "14px",
+    lineHeight: "1.6",
+  },
+  container: {
+    maxWidth: "1200px",
+    margin: "0 auto",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  infoSection: {
+    marginBottom: "20px",
+  },
+  contactSection: {
+    marginBottom: "20px",
+  },
+  heading: {
+    fontSize: "16px",
+    fontWeight: "bold",
+    marginBottom: "10px",
+  },
+  copyright: {
+    borderTop: "1px solid #444",
+    marginTop: "20px",
+    paddingTop: "10px",
+    fontSize: "12px",
+    color: "#aaa",
+  },
 };
 
 export default Layout;

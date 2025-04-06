@@ -12,10 +12,10 @@ function MypageSet({ member, setMember, position }) {
   const [account, setAccount] = useState(member[position].account);
   const btnStyle = {
     color: "white",
-    background: "#6CC0FF",
+    background: "#22B8CF",
     padding: ".3rem .6rem",
     margin: "2rem 1rem",
-    border: "1px #6CC0FF",
+    border: "1px #22B8CF",
     borderRadius: ".40rem",
     fontSize: "1rem",
   };

@@ -1,10 +1,17 @@
 import React, { useState } from "react";
-import {
-  useParams,
-  useNavigate,
-} from "react-router-dom";
-
+import { useParams, useNavigate } from "react-router-dom";
+import "../styles/Tourbook.css";
 function Tourbook({ alltour, setAlltour, tour, setTour, mytour, setMyTour }) {
+  const btnStyle = {
+    color: "white",
+    background: "#22B8CF",
+    padding: ".3rem .6rem",
+    margin: "1rem .7rem",
+    border: "1px #22B8CF",
+    borderRadius: ".40rem",
+    fontSize: "1rem",
+  };
+
   const navigate = useNavigate();
   const { idxx, idx2 } = useParams();
   // const [tourname, setTourname] = useState("");
@@ -68,16 +75,12 @@ function Tourbook({ alltour, setAlltour, tour, setTour, mytour, setMyTour }) {
 
   return (
     <>
-      여행상품 상세보기
-      <hr />
-      <h1>{tmp.name}</h1>
-      <hr />
-      <p>
-        <img src={tmp.src} alt={tmp.alt} title={tmp.title} width={tmp.width} />
-      </p>
-      <p>
-        <p>
-          출국일자
+      <div className="reservation-container">
+        <div className="image-wrapper">
+          <img src={tmp.src} alt="예약 배너" className="reservation-image" />
+        </div>
+        <div className="form-group">
+          <label>출국일자</label>
           <input
             onChange={(e) => {
               setData(e.target.value);
@@ -86,18 +89,20 @@ function Tourbook({ alltour, setAlltour, tour, setTour, mytour, setMyTour }) {
             placeholder={""}
             type="date"
           />
-        </p>
-        입국일자
-        <input
-          onChange={(e) => {
-            setData2(e.target.value);
-          }}
-          value={Date2}
-          placeholder={""}
-          type="date"
-        />
-        <p>
-          인원수
+        </div>
+        <div className="form-group">
+          <label>입국일자</label>
+          <input
+            onChange={(e) => {
+              setData2(e.target.value);
+            }}
+            value={Date2}
+            placeholder={""}
+            type="date"
+          />
+        </div>
+        <div className="form-group">
+          <label>인원수</label>
           <input
             onChange={(e) => {
               setAll(e.target.value);
@@ -105,9 +110,9 @@ function Tourbook({ alltour, setAlltour, tour, setTour, mytour, setMyTour }) {
             value={ak}
           />
           명
-        </p>
-        <p>
-          성인
+        </div>
+        <div className="form-group">
+          <label>성인</label>
           <input
             onChange={(e) => {
               setAdult(e.target.value);
@@ -118,9 +123,9 @@ function Tourbook({ alltour, setAlltour, tour, setTour, mytour, setMyTour }) {
             type="number"
           />
           명
-        </p>
-        <p>
-          유아
+        </div>
+        <div className="form-group">
+          <label>유아</label>
           <input
             onChange={(e) => {
               setKid(e.target.value);
@@ -131,29 +136,32 @@ function Tourbook({ alltour, setAlltour, tour, setTour, mytour, setMyTour }) {
             type="number"
           />
           명
-        </p>
-        <hr />
-        <b>총 예상금액 : {totalprice} 원</b>
-      </p>
-      <>
-        <button
-          onClick={() => {
-            navigate("/");
-            Add(idx2);
-          }}
-        >
-          예약완료
-        </button>
-        <button
-          onClick={() => {
-            onRemove(idxx);
-            navigate("/Reviews");
-          }}
-        >
-          삭제
-        </button>
-        <button onClick={() => navigate("/")}>목록</button>
-      </>
+        </div>
+        <div className="total-price">총 예상금액 : {totalprice} 원</div>
+        <div className="button-group">
+          <button
+            className="btn complete"
+            onClick={() => {
+              navigate("/");
+              Add(idx2);
+            }}
+          >
+            예약완료
+          </button>
+          <button
+            className="btn delete"
+            onClick={() => {
+              onRemove(idxx);
+              navigate("/Reviews");
+            }}
+          >
+            삭제
+          </button>
+          <button className="btn complete" onClick={() => navigate("/")}>
+            목록
+          </button>
+        </div>
+      </div>
     </>
   );
 }

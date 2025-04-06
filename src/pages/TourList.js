@@ -1,77 +1,63 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
-function TourList({ alltour, setAlltour, tour, setTour, mytour, setMyTour }) {
-  const [datas, setDatas] = useState(alltour);
-  const divGroupStyle = {
-    position: "static",
-  };
-  const divStyle = {
-    display: "inline-block",
-    margin: "10px",
-  };
-  async function getDatas() {
-    fetch(
-      "https://apis.data.go.kr/B551011/KorService1/areaBasedList1?numOfRows=12&pageNo=1&MobileOS=ETC&MobileApp=AppTest&ServiceKey=ZlHtWroJ5vtZoCdZ24%2FYg25%2B%2F6l4ZCjrp19iGdmsJKQOng6tH28umr0KycuccrDvDy8ANWGyQHAO3iTL7Hdqyw%3D%3D&listYN=Y&arrange=A&contentTypeId=15&areaCode=6&sigunguCode=&cat1=&cat2=&cat3=&_type=json",
-      {
-        method: "GET",
-      }
-    )
-      .then((res) => {
-        //fetch를 통해 받아온 res객체 안에
-        //ok 프로퍼티가 있음
-        if (!res.ok) {
-          throw Error("could not fetch the data that resource");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        setDatas(data.response.body.items.item);
-      })
-      .catch((err) => {
-        console.log(err.message);
-        //에러시 Loading메세지 사라지고
-        //에러메세지만 보이도록 설정
-      });
-  }
-  useEffect(() => {
-    getDatas();
-  }, []);
-
+function TourList({ alltour }) {
   return (
     <>
-      <div style={divGroupStyle}>
-        {alltour.map((i) => (
-          <div key={i.idxx} style={divStyle}>
-            <Link to={"/Tourbook/" + i.idxx} key={i.idxx}>
-              <p />
-              <img src={i.src} alt={i.alt} title={i.title} width={225} height={160}/>
-              <p />
-              <p />
-              {i.name}
-              <p />
-            </Link>
-          </div>
-        ))}
-        {datas.map((i) => (
-          <div key={i.idxx}>
-            <Link to={"/Tourbook/" + i.idxx} key={i.idxx}>
-              <p />
-              {i.title}
-              <p />
-              <p />
-              <img
-                src={alltour[0].src}
-                alt={alltour[0].alt}
-                title={alltour[0].title}
-                width={alltour[0].width}
-              />
-              <p />
-            </Link>
-          </div>
+      <div style={styles.container}>
+        {alltour.map((item) => (
+          <Link to={"/Tourbook/" + item.idxx} key={item.idxx} className="no-underline">
+            <div key={item.idxx} style={styles.card}>
+              <img src={item.src} alt={item.title} style={styles.image} />
+              <div style={styles.text}>
+                <h3 style={styles.title}>{item.title}</h3>
+                <p style={styles.description}>{item.name}</p>
+              </div>
+            </div>
+          </Link>
         ))}
       </div>
     </>
   );
 }
+
+const styles = {
+  container: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+    gap: "20px",
+    padding: "20px",
+    backgroundColor: "#f9f9f9",
+  },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: "8px",
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    overflow: "hidden",
+    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+    textAlign: "center",
+  },
+  cardHover: {
+    transform: "scale(1.05)",
+    boxShadow: "0 6px 10px rgba(0, 0, 0, 0.15)",
+  },
+  image: {
+    width: "100%",
+    height: "150px",
+    objectFit: "cover",
+  },
+  text: {
+    padding: "15px",
+  },
+  title: {
+    fontSize: "18px",
+    margin: "10px 0 5px",
+    color: "#333",
+  },
+  description: {
+    fontSize: "14px",
+    color: "#666",
+  },
+};
+
 export default TourList;

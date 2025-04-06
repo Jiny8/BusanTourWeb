@@ -6,9 +6,9 @@ function QnAUpdate({ qna, setQna }) {
   const { idx4 } = useParams();
   let tmp = qna.filter((info, i) => info.idx4 == idx4)[0];
   //tmp 에는 내가 선택한 위치의 [idx,title,createdBy,concat] 한줄(값)을 담고있음
-  const [Title, setTitle] = useState(tmp.title);
-  const [Name, setName] = useState(tmp.name);
-  const [Text, setText] = useState(tmp.text);
+  const [title, setTitle] = useState(tmp.title);
+  const [name, setName] = useState(tmp.name);
+  const [content, setContent] = useState(tmp.content);
 
   //onClick에 여러기능 실행시, 한 {}안에 넣어주고 한줄끝마다 ;를 넣어 구분시켜줘야함
   //...tmp1[idx], 대신 idx: data[idx].idx 를 입력 해주어도 가능함
@@ -17,9 +17,9 @@ function QnAUpdate({ qna, setQna }) {
     let id = qna.indexOf(tmp);
     tmp1[id] = {
       ...tmp1[id],
-      title: Title,
-      text: Text,
-      name: Name,
+      title: title,
+      name: name,
+      content: content,
     };
     setQna(tmp1);
   };
@@ -34,7 +34,7 @@ function QnAUpdate({ qna, setQna }) {
           onChange={(e) => {
             setTitle(e.target.value);
           }}
-          value={Title}
+          value={title}
         />
       </p>
       <p>
@@ -43,22 +43,22 @@ function QnAUpdate({ qna, setQna }) {
           onChange={(e) => {
             setName(e.target.value);
           }}
-          value={Name}
+          value={name}
         />
       </p>
       <p>
         내용
         <textarea
-          type={Text}
+          type="text"
           onChange={(e) => {
-            setText(e.target.value);
+            setContent(e.target.value);
           }}
-          value={Text}
+          value={content}
         />
       </p>
       <button
         onClick={() => {
-          alert(Title + "//" + Name + "//" + Text + " 를 수정하였습니다.");
+          alert(title + "//" + name + "//" + content + " 를 수정하였습니다.");
           Update(tmp.idx4);
           navigate("/QnA");
         }}

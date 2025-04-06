@@ -8,11 +8,11 @@ import Kakao from "../utils/Kakao";
 function TourInfoDetail({ tourinfo, setTourinfo }) {
   const btnStyle = {
     color: "white",
-    background: "#6CC0FF",
+    background: "#22B8CF",
     padding: ".2rem .6rem",
     margin: "0 auto",
     display : "block",
-    border: "1px #6CC0FF",
+    border: "1px #22B8CF",
     borderRadius: ".40rem",
     fontSize: "1rem",
     lineHeight: 1.5,
@@ -39,7 +39,7 @@ function TourInfoDetail({ tourinfo, setTourinfo }) {
       </p>
       <p>- 일시 : {tmp.DateTime}</p>
       <p>- 장소 : {tmp.place}</p>
-      <p>- 공연행사 : {tmp.contents}</p>
+      <p>- 공연행사 : {tmp.content}</p>
       <p>- 주최 : {tmp.organizedBy}</p>
       <p>{tmp.text5}</p>
       <p>{tmp.text6}</p>
