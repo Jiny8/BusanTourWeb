@@ -70,7 +70,6 @@ function Login({ member, position, setPosition }) {
           } else {
             return alert("아이디 와 비밀번호가 일치하지않습니다.");
           }
-          console.log(res);
         });
     };
     fetchIDPW();
