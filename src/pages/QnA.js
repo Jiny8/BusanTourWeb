@@ -63,8 +63,8 @@ function QnA({ qna, setQna }) {
   const navigate = useNavigate();
   return (
     <>
-      <div className="faq-inquiry-container unified-style">
-        <section className="faq-section">
+      <div className="unified-style">
+        <section>
           <h2 className="section-title">자주 묻는 질문 Top5</h2>
           <ol className="faq-list">
             <li
@@ -134,7 +134,7 @@ function QnA({ qna, setQna }) {
               <div style={styles.header}>
                 <span style={styles.columnTitle}>작성번호</span>
                 <span style={styles.columnAuthor}>작성자</span>
-                <span style={styles.columnDate}>글글제목</span>
+                <span style={styles.columnDate}>글제목</span>
               </div>
               {qna.map((i) => (
                 <Link
@@ -143,7 +143,7 @@ function QnA({ qna, setQna }) {
                   className="no-underline"
                 >
                   <div key={i.idx} style={styles.row}>
-                    <span style={styles.columnTitle}>{i.title}</span>
+                    <span style={styles.columnTitle}>{i.idx4}</span>
                     <span style={styles.columnAuthor}>{i.name}</span>
                     <span style={styles.columnDate}>{i.title}</span>
                   </div>
@@ -199,7 +199,7 @@ function QnA({ qna, setQna }) {
 
 const styles = {
   container: {
-    width: "80%",
+    width: "60%",
     margin: "20px auto",
     marginBottom: "2rem",
     border: "1px solid #ddd",
