@@ -83,7 +83,7 @@ function TourInfo({ tourinfo, setNotice, member, setMember, position }) {
         setDatas(data.response.body.items.item);
       })
       .catch((err) => {
-        console.log(err.message);
+        alert(err.message);
         //에러시 Loading메세지 사라지고
         //에러메세지만 보이도록 설정
       });
