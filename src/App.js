@@ -207,18 +207,21 @@ export default function App() {
       name: "김*영",
       title: "환불요청",
       content: "환불요청합니다.",
+      date : "2025-01-31",
     },
     {
       idx4: 1,
       name: "전*준",
       title: "항공권 검색",
       content: "제주항공에서 예약 검색이 되지 않습니다.",
+      date : "2025-02-03",
     },
     {
       idx4: 2,
       name: "박*진",
       title: "티켓 재발급",
       content: "티켓 재발급하려면 어떻게하면 될까요??",
+      date : "2025-01-17",
     },
   ]);
 
