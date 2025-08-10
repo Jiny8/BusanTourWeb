@@ -29,6 +29,7 @@ function TourInfoDetail({ tourinfo, setTourinfo }) {
 
   return (
     <>
+  <p>목록</p>
     <div style={screenStyle}>
       <h2>{tmp.title}</h2>
       <p>{tmp.dateDetail}</p>
@@ -43,12 +44,12 @@ function TourInfoDetail({ tourinfo, setTourinfo }) {
       <p>- 주최 : {tmp.organizedBy}</p>
       <p>{tmp.text5}</p>
       <p>{tmp.text6}</p>
-      <Kakao X={tmp.X}Y={tmp.Y}/>
+      {/*<Kakao X={tmp.X}Y={tmp.Y}/>
         <p>
           <button style={btnStyle} onClick={() => navigate("/TourInfo")}>
             목록
           </button>
-        </p>
+        </p>*/}
       </div>
     </>
   );

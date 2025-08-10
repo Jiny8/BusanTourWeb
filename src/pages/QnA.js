@@ -116,8 +116,6 @@ function QnA({ qna, setQna }) {
 
         <hr className="divider" />
       </div>
-      
-    
          <div style={styles.container}>
               <div style={styles.header}>
                 <span style={styles.columnTitle}>작성번호</span>
@@ -183,7 +181,7 @@ function QnA({ qna, setQna }) {
         <button
           style={styles.button}
           onClick={() => {
-            alert("문의글을을 저장하였습니다.");
+            alert("문의글을 저장하였습니다.");
             Add();
             navigate("/QnA");
           }}

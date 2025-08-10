@@ -26,14 +26,6 @@ function MypageSet({ member, setMember, position }) {
   };
 
   return (
-    // <div
-    //   style={{
-    //     display: "block",
-    //     flexWrap: "wrap",
-    //     padding: "2rem 13rem",
-    //     justifyContent: "center",
-    //   }}
-    // >
     <div style={styles.container}>
         <div style={styles.header}></div>
       <p>

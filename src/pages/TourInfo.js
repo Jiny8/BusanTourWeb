@@ -66,26 +66,30 @@ function TourInfo({ tourinfo, setNotice, member, setMember, position }) {
   //(버튼색상)기본 #22B8CF, 선택 #368AFF
   async function getDatas() {
     fetch(
-      "https://apis.data.go.kr/B551011/KorService1/areaBasedList1?numOfRows=12&pageNo=1&MobileOS=ETC&MobileApp=AppTest&ServiceKey=ZlHtWroJ5vtZoCdZ24%2FYg25%2B%2F6l4ZCjrp19iGdmsJKQOng6tH28umr0KycuccrDvDy8ANWGyQHAO3iTL7Hdqyw%3D%3D&listYN=Y&arrange=A&contentTypeId=15&areaCode=6&sigunguCode=&cat1=&cat2=&cat3=&_type=json",
+      "http://apis.data.go.kr/6260000/FestivalService/getFestivalKr?serviceKey=ZlHtWroJ5vtZoCdZ24%2FYg25%2B%2F6l4ZCjrp19iGdmsJKQOng6tH28umr0KycuccrDvDy8ANWGyQHAO3iTL7Hdqyw%3D%3D&numOfRows=10&pageNo=1&resultType=json",
       {
         method: "GET",
       }
     )
       .then((res) => {
-        //fetch를 통해 받아온 res객체 안에
-        //ok 프로퍼티가 있음
+        //fetch를 통해 받아온 res객체 안에 ok 프로퍼티가 있음
         if (!res.ok) {
           throw Error("could not fetch the data that resource");
-        }
+        } 
         return res.json();
       })
       .then((data) => {
-        setDatas(data.response.body.items.item);
+        //콘솔로그.데이터 불러와서 일련번호.고유번호가 있는지 확인해볼것!!없으면 일련번호를 부여할 방법찾기!
+        setDatas(data.response.body.items.item);//api 정보데이터
+        console.log(data.response.body.items.item);
+        console.log(data);
+        //contentid를 고유번호로 사용해보기기
       })
       .catch((err) => {
         alert(err.message);
         //에러시 Loading메세지 사라지고
         //에러메세지만 보이도록 설정
+        //Props를 통해 함수,변수에 api 정보를 전달가능
       });
   }
   useEffect(() => {
@@ -107,15 +111,16 @@ function TourInfo({ tourinfo, setNotice, member, setMember, position }) {
     setTempTourInfo(
       tourinfo.filter((info, i) => info.date.split(".")[1] * 1 == month)
     );
-    
   };
 
   return (
     <>
     <div style={styles.container}>
+      
         {datas.map((item) => (
-          <Link to={"/Tourbook/" + item.idxx} key={item.idxx} className="no-underline">
-            <div key={item.idxx} style={styles.card}>
+          <Link to={"/TourInfoDetail/" + item.idxx ?? item.contentid} key={item.idxx?? item.contentid} className="no-underline">
+            {console.log(item.contentid)}
+            <div key={item.idxx?? item.contentid} style={styles.card}>
               <img src={item.firstimage} alt={item.title} style={styles.image} />
               <div style={styles.text}>
                 <h3 style={styles.title}>{item.title}</h3>
@@ -165,11 +170,8 @@ function TourInfo({ tourinfo, setNotice, member, setMember, position }) {
         
           </div>
         ))}
-      
         </div>*/}
     </>
   );
 }
-
-
 export default TourInfo;
