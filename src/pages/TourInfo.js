@@ -4,7 +4,7 @@ import {
   Link,
 } from "react-router-dom";
 
-function TourInfo({ tourinfo, setNotice, member, setMember, position }) {
+function TourInfo({ tourinfo, setTourinfo, setNotice, member, setMember, position }) {
   const navigate = useNavigate();
   const [tempTourInfo, setTempTourInfo] = useState(tourinfo);
   const [datas, setDatas] = useState(tourinfo);
@@ -72,24 +72,39 @@ function TourInfo({ tourinfo, setNotice, member, setMember, position }) {
       }
     )
       .then((res) => {
-        //fetch를 통해 받아온 res객체 안에 ok 프로퍼티가 있음
+        //fetch를 통해 받아온 res객체 안에
+        //ok 프로퍼티가 있음
         if (!res.ok) {
           throw Error("could not fetch the data that resource");
-        } 
+        }
         return res.json();
       })
       .then((data) => {
-        //콘솔로그.데이터 불러와서 일련번호.고유번호가 있는지 확인해볼것!!없으면 일련번호를 부여할 방법찾기!
-        setDatas(data.response.body.items.item);//api 정보데이터
-        console.log(data.response.body.items.item);
-        console.log(data);
-        //contentid를 고유번호로 사용해보기기
+        const outputData = data.getFestivalKr.item.map((item, index) => {
+          return {
+            idxx: index,
+            X: String(item.LAT),
+            Y: String(item.LNG),
+            name: item.MAIN_TITLE || "",
+            date: item.USAGE_DAY_WEEK_AND_TIME?.trim() || "",
+            dateDetail: item.USAGE_DAY_WEEK_AND_TIME ? `일시 : ${item.USAGE_DAY_WEEK_AND_TIME.trim()}` : "",
+            src: item.MAIN_IMG_NORMAL || "",
+            alt: item.TITLE || "",
+            title: item.TITLE || "",
+            DateTime: item.USAGE_DAY_WEEK_AND_TIME || "",
+            place: item.MAIN_PLACE || item.PLACE || "",
+            text3: item.USAGE_AMOUNT ? `- 요금 : ${item.USAGE_AMOUNT}` : "- 요금 : 무료",
+            content: item.ITEMCNTNTS?.trim() || "",
+            text6: item.MIDDLE_SIZE_RM1 ? `- 편의시설 : ${item.MIDDLE_SIZE_RM1}` : ""
+          };
+        });
+        setDatas(outputData);
+        setTourinfo(outputData)
       })
       .catch((err) => {
         alert(err.message);
         //에러시 Loading메세지 사라지고
         //에러메세지만 보이도록 설정
-        //Props를 통해 함수,변수에 api 정보를 전달가능
       });
   }
   useEffect(() => {
@@ -111,17 +126,16 @@ function TourInfo({ tourinfo, setNotice, member, setMember, position }) {
     setTempTourInfo(
       tourinfo.filter((info, i) => info.date.split(".")[1] * 1 == month)
     );
+    
   };
 
   return (
     <>
     <div style={styles.container}>
-      
         {datas.map((item) => (
-          <Link to={"/TourInfoDetail/" + item.idxx ?? item.contentid} key={item.idxx?? item.contentid} className="no-underline">
-            {console.log(item.contentid)}
-            <div key={item.idxx?? item.contentid} style={styles.card}>
-              <img src={item.firstimage} alt={item.title} style={styles.image} />
+          <Link to={"/TourInfoDetail/" + item.idxx} key={item.idxx} className="no-underline">
+            <div key={item.idxx} style={styles.card}>
+              <img src={item.src} alt={item.title} style={styles.image} />
               <div style={styles.text}>
                 <h3 style={styles.title}>{item.title}</h3>
                 <p style={styles.description}>{item.name}</p>
@@ -170,8 +184,11 @@ function TourInfo({ tourinfo, setNotice, member, setMember, position }) {
         
           </div>
         ))}
+      
         </div>*/}
     </>
   );
 }
+
+
 export default TourInfo;
