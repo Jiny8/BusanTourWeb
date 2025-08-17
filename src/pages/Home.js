@@ -10,10 +10,10 @@ function Home({ tour }) {
       <div className="slider">
         <div className="slide">
           <img
-            src="https://visitbusan.net/uploadImgs/files/cntnts/20221115110601843_wufrotr"
+            src="https://www.busan.go.kr/comm/getImage?srvcId=MEDIA&upperNo=17500&fileTy=MEDIA&fileNo=1"
             alt="여행상품1.png"
             title="여행상품1.png"
-            width="1200px"
+            width="1600px"
           />
         </div>
         <div className="slide">
@@ -21,7 +21,7 @@ function Home({ tour }) {
             src="https://visitbusan.net/uploadImgs/files/cntnts/20221115110556317_wufrotr"
             alt="여행상품1.png"
             title="여행상품1.png"
-            width="1200px"
+            width="1600px"
           />
         </div>
         <div className="slide">
@@ -29,7 +29,7 @@ function Home({ tour }) {
             src="https://visitbusan.net/uploadImgs/files/cntnts/20221115110556661_wufrotr"
             alt="여행상품1.png"
             title="여행상품1.png"
-            width="1200px"
+            width="1600px"
           />
         </div>
         <div className="slide">
@@ -37,7 +37,7 @@ function Home({ tour }) {
             src="https://visitbusan.net/uploadImgs/files/cntnts/20220413144137777_wufrotr"
             alt="여행상품1.png"
             title="여행상품1.png"
-            width="1200px"
+            width="1600px"
           />
         </div>
       </div>

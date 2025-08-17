@@ -121,7 +121,6 @@ export default function App() {
       src: "https://ak-d.tripcdn.com/images/10011g000001hdrzy89CF_Z_640_10000_R5.jpg_.webp?proc=autoorient&proc=source%2ftrip",
       alt: "여행상품-가평남이섬",
       title: "여행상품-가평남이섬",
-  
     },
     {
       idxx: 8,
@@ -129,8 +128,7 @@ export default function App() {
       src: "https://a.cdn-hotels.com/gdcs/production176/d1944/48d1f12e-e7a4-4492-aac3-03f3fc440929.jpg?impolicy=fcrop&w=1600&h=1066&q=medium",
       alt: "여행상품-강릉",
       title: "여행상품-강릉",
-    
-    },
+        },
     {
       idxx: 9,
       name: "인천여행",

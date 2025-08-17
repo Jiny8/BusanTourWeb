@@ -30,6 +30,7 @@ function QnADetail({ qna, setQna }) {
         style={styles.button}
         onClick={() => navigate("/QnA/up/" + tmp.idx4)}
       >
+
         수정
       </button>
       <button

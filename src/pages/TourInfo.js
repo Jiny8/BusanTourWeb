@@ -4,7 +4,7 @@ import {
   Link,
 } from "react-router-dom";
 
-function TourInfo({ tourinfo, setNotice, member, setMember, position }) {
+function TourInfo({ tourinfo, setTourinfo, setNotice, member, setMember, position }) {
   const navigate = useNavigate();
   const [tempTourInfo, setTempTourInfo] = useState(tourinfo);
   const [datas, setDatas] = useState(tourinfo);
@@ -66,7 +66,7 @@ function TourInfo({ tourinfo, setNotice, member, setMember, position }) {
   //(버튼색상)기본 #22B8CF, 선택 #368AFF
   async function getDatas() {
     fetch(
-      "https://apis.data.go.kr/B551011/KorService1/areaBasedList1?numOfRows=12&pageNo=1&MobileOS=ETC&MobileApp=AppTest&ServiceKey=ZlHtWroJ5vtZoCdZ24%2FYg25%2B%2F6l4ZCjrp19iGdmsJKQOng6tH28umr0KycuccrDvDy8ANWGyQHAO3iTL7Hdqyw%3D%3D&listYN=Y&arrange=A&contentTypeId=15&areaCode=6&sigunguCode=&cat1=&cat2=&cat3=&_type=json",
+      "http://apis.data.go.kr/6260000/FestivalService/getFestivalKr?serviceKey=ZlHtWroJ5vtZoCdZ24%2FYg25%2B%2F6l4ZCjrp19iGdmsJKQOng6tH28umr0KycuccrDvDy8ANWGyQHAO3iTL7Hdqyw%3D%3D&numOfRows=10&pageNo=1&resultType=json",
       {
         method: "GET",
       }
@@ -80,7 +80,26 @@ function TourInfo({ tourinfo, setNotice, member, setMember, position }) {
         return res.json();
       })
       .then((data) => {
-        setDatas(data.response.body.items.item);
+        const outputData = data.getFestivalKr.item.map((item, index) => {
+          return {
+            idxx: index,
+            X: String(item.LAT),
+            Y: String(item.LNG),
+            name: item.MAIN_TITLE || "",
+            date: item.USAGE_DAY_WEEK_AND_TIME?.trim() || "",
+            dateDetail: item.USAGE_DAY_WEEK_AND_TIME ? `일시 : ${item.USAGE_DAY_WEEK_AND_TIME.trim()}` : "",
+            src: item.MAIN_IMG_NORMAL || "",
+            alt: item.TITLE || "",
+            title: item.TITLE || "",
+            DateTime: item.USAGE_DAY_WEEK_AND_TIME || "",
+            place: item.MAIN_PLACE || item.PLACE || "",
+            text3: item.USAGE_AMOUNT ? `- 요금 : ${item.USAGE_AMOUNT}` : "- 요금 : 무료",
+            content: item.ITEMCNTNTS?.trim() || "",
+            text6: item.MIDDLE_SIZE_RM1 ? `- 편의시설 : ${item.MIDDLE_SIZE_RM1}` : ""
+          };
+        });
+        setDatas(outputData);
+        setTourinfo(outputData)
       })
       .catch((err) => {
         alert(err.message);
@@ -114,9 +133,9 @@ function TourInfo({ tourinfo, setNotice, member, setMember, position }) {
     <>
     <div style={styles.container}>
         {datas.map((item) => (
-          <Link to={"/Tourbook/" + item.idxx} key={item.idxx} className="no-underline">
+          <Link to={"/TourInfoDetail/" + item.idxx} key={item.idxx} className="no-underline">
             <div key={item.idxx} style={styles.card}>
-              <img src={item.firstimage} alt={item.title} style={styles.image} />
+              <img src={item.src} alt={item.title} style={styles.image} />
               <div style={styles.text}>
                 <h3 style={styles.title}>{item.title}</h3>
                 <p style={styles.description}>{item.name}</p>

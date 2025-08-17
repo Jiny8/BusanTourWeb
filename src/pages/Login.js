@@ -22,7 +22,9 @@ function Login({ member, position, setPosition }) {
     }
   }
   useEffect(() => {
+    //useEffect -> 단 1회만 실행되는 기능
     load();
+    //load();를 해줌으로 새로고침에도 세션된 로그인의 정보를 받아올수있음음
   }, []);
 
   const btnStyle = {
@@ -48,6 +50,7 @@ function Login({ member, position, setPosition }) {
   const navigate = useNavigate();
   const connect = () => {
     const fetchIDPW = async () => {
+      //"fetch" = 서버에 HTTP 요청을 보내서 데이터를 받아오는 것(자바스크립트의 fetch() 함수와 비슷한 역할)
       await fetch("http://localhost:8080/members/login", {
         method: "POST",
         headers: {
@@ -60,6 +63,7 @@ function Login({ member, position, setPosition }) {
           return res.json();
         })
         .then((res) => {
+          console.log(res)
           if (ID == res.id && PW == res.pw) {
             //return alert은 return 이후는 실행되지않으니, setPosition("admin");은 그 전에입력해줄것!
             setPosition("1");

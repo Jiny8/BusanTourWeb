@@ -23,7 +23,7 @@ function QnAWrite({ setData, data }) {
 
   return (
     <>
-      "QNA 작성공간 입니다. 작업중~~~~~~"
+      "QNA 작성공간 입니다."
       <p>
         제 목
         <input
