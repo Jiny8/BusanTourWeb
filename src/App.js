@@ -1,13 +1,19 @@
 import React from "react";
-import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Layout from "./pages/Layout";
+import Home from "./pages/Home";
+import NoPage from "./pages/NoPage";
+import "./styles/global.css";
 
-function App() {
+export default function App() {
   return (
-    <div className="app">
-      <h1>부산 투어</h1>
-      <p>부산 여행 투어 예약 서비스에 오신 것을 환영합니다.</p>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="*" element={<NoPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
-
-export default App;
