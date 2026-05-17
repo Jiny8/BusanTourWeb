@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, useNavigate, useLocation, NavLink } from "react-router-dom";
+import { useAuthStore } from "../stores/authStore";
 import titleImage from "../assets/images/title.png";
 
 const categories = [
@@ -12,20 +13,27 @@ const categories = [
 ];
 
 export default function Layout() {
+  const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => { setMenuOpen(false); }, [location.pathname]);
 
+  const handleLogout = () => { logout(); navigate("/login"); };
+
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <style>{`
         .nav-links { display: flex; }
         .hamburger { display: none !important; }
+        .nav-user-logout { display: block; }
+        .nav-user-name { display: block; }
         @media (max-width: 768px) {
           .nav-links { display: none; }
           .hamburger { display: flex !important; }
+          .nav-user-logout { display: none; }
+          .nav-user-name { display: none; }
         }
       `}</style>
 
@@ -50,6 +58,10 @@ export default function Layout() {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+            <span className="nav-user-name" style={userLabel}>{user?.id}</span>
+            <button className="nav-user-logout" style={primaryBtn} onClick={handleLogout}>
+              로그아웃
+            </button>
             <button
               className="hamburger"
               style={hamburgerBtn}
@@ -77,6 +89,12 @@ export default function Layout() {
                 {c.title}
               </NavLink>
             ))}
+            <div style={{ padding: "0.7rem 1.5rem 1rem" }}>
+              {user && <p style={{ fontSize: "0.85rem", color: "#888", marginBottom: "0.5rem" }}>{user.id} 님</p>}
+              <button style={{ ...primaryBtn, width: "100%" }} onClick={handleLogout}>
+                로그아웃
+              </button>
+            </div>
           </div>
         )}
       </nav>
@@ -125,6 +143,12 @@ const linkStyle = {
   fontWeight: 500, color: "#444", whiteSpace: "nowrap", transition: "background 0.15s",
 };
 const linkActive = { color: "#22B8CF", fontWeight: 700, background: "rgba(34,184,207,0.1)" };
+const userLabel = { fontSize: "0.9rem", color: "#555", fontWeight: 600, whiteSpace: "nowrap" };
+const primaryBtn = {
+  background: "#22B8CF", color: "#fff", border: "none", borderRadius: 8,
+  padding: "0.45rem 1rem", fontSize: "0.9rem", cursor: "pointer",
+  fontFamily: "inherit", whiteSpace: "nowrap",
+};
 const hamburgerBtn = {
   flexDirection: "column", gap: 5, background: "none", border: "none",
   cursor: "pointer", padding: "4px",
