@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./pages/Layout";
 import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import NoPage from "./pages/NoPage";
 import { useAuthStore } from "./stores/authStore";
 import { authFetch } from "./api/authFetch";
@@ -15,7 +17,6 @@ function PrivateRoute({ children }) {
 export default function App() {
   const { setUser, logout } = useAuthStore();
 
-  // 앱 시작 시 서버에서 로그인 상태 확인
   useEffect(() => {
     authFetch("http://localhost:8080/auth/me")
       .then((res) => {
@@ -29,8 +30,8 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* 로그인/회원가입은 나중에 추가 예정 */}
-        <Route path="/login" element={<div style={{ padding: "2rem" }}>로그인 페이지 (추후 구현)</div>} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route
           path="/"
           element={
