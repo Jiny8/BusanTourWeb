@@ -1,27 +1,23 @@
+import React, { useEffect } from "react";
 
-import React ,{useEffect} from "react";
+function Kakao({ X, Y }) {
+  useEffect(() => {
+    if (!window.kakao || !window.kakao.maps) return;
 
-const { kakao } = window;
+    const container = document.getElementById("map");
+    const options = {
+      center: new window.kakao.maps.LatLng(X, Y),
+      level: 3,
+    };
+    new window.kakao.maps.Map(container, options);
+  }, [X, Y]);
 
-function Kakao ({ X, Y }){
-
-    useEffect(()=>{
-        const container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
-        const options = {
-            center: new kakao.maps.LatLng(X, Y), //지도의 중심좌표
-            level: 3 //지도 확대 레벨
-        };
-        new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
-
-    }, [])
-
-
-
-    return(
-        <div id="map" style={{
-            width: '1000px',
-            height: '500px'
-        }}></div>
-    )
+  return (
+    <div
+      id="map"
+      style={{ width: "100%", height: "400px", borderRadius: "10px", marginTop: "1.5rem" }}
+    />
+  );
 }
+
 export default Kakao;
