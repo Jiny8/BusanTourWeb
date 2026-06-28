@@ -6,6 +6,9 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import TourInfo from "./pages/TourInfo";
 import TourInfoDetail from "./pages/TourInfoDetail";
+import TourList from "./pages/TourList";
+import Tourbook from "./pages/Tourbook";
+import TourBuylist from "./pages/TourBuylist";
 import NoPage from "./pages/NoPage";
 import { useAuthStore } from "./stores/authStore";
 import { authFetch } from "./api/authFetch";
@@ -77,6 +80,9 @@ export default function App() {
           <Route index element={<Home />} />
           <Route path="TourInfo" element={<TourInfo tourinfo={tourinfo} />} />
           <Route path="TourInfoDetail/:idxx" element={<TourInfoDetail tourinfo={tourinfo} />} />
+          <Route path="TourList" element={<TourList />} />
+          <Route path="Tourbook/:idxx" element={<Tourbook />} />
+          <Route path="TourBuylist/:id" element={<TourBuylist />} />
           <Route path="*" element={<NoPage />} />
         </Route>
       </Routes>
