@@ -9,6 +9,10 @@ import TourInfoDetail from "./pages/TourInfoDetail";
 import TourList from "./pages/TourList";
 import Tourbook from "./pages/Tourbook";
 import TourBuylist from "./pages/TourBuylist";
+import Reviews from "./pages/Reviews";
+import ReviewDetail from "./pages/ReviewDetail";
+import ReviewWrite from "./pages/ReviewWrite";
+import ReviewUpdate from "./pages/ReviewUpdate";
 import NoPage from "./pages/NoPage";
 import { useAuthStore } from "./stores/authStore";
 import { authFetch } from "./api/authFetch";
@@ -83,6 +87,10 @@ export default function App() {
           <Route path="TourList" element={<TourList />} />
           <Route path="Tourbook/:idxx" element={<Tourbook />} />
           <Route path="TourBuylist/:id" element={<TourBuylist />} />
+          <Route path="reviews" element={<Reviews />} />
+          <Route path="review/:idx" element={<ReviewDetail />} />
+          <Route path="review/write" element={<ReviewWrite />} />
+          <Route path="review/up/:idx" element={<ReviewUpdate />} />
           <Route path="*" element={<NoPage />} />
         </Route>
       </Routes>
