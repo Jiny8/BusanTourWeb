@@ -1,100 +1,51 @@
-import React from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 
-function Reviews({ data }) {
+export default function Reviews() {
+  const [data, setData] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    fetch("http://localhost:8080/reviews")
+      .then((r) => r.json())
+      .then(setData)
+      .catch(() => alert("불러오지 못했습니다."));
+  }, [location]);
+
   return (
-    <div>
-      <div style={styles.container}>
-        <div style={styles.header}>
-          <span style={styles.columnTitle}>제목</span>
-          <span style={styles.columnAuthor}>작성자</span>
-          <span style={styles.columnDate}>작성일</span>
+    <div className="page-container">
+      <h2 className="section-title" style={{ marginBottom: "1.2rem" }}>여행 리뷰</h2>
+
+      <div className="board-wrap">
+        <div className="board-header">
+          <span>제목</span>
+          <span>작성자</span>
+          <span className="board-meta date">작성일</span>
         </div>
+
+        {data.length === 0 && (
+          <div style={{ padding: "2rem", textAlign: "center", color: "#aaa" }}>
+            첫 번째 리뷰를 작성해보세요!
+          </div>
+        )}
+
         {data.map((post) => (
-          <Link
-            to={"/review/" + post.idx}
-            key={post.idx}
-            className="no-underline"
-          >
-            <div key={post.idx} style={styles.row}>
-              <span style={styles.columnTitle}>{post.title}</span>
-              <span style={styles.columnAuthor}>{post.createdBy}</span>
-              <span style={styles.columnDate}>{post.date}</span>
+          <Link to={`/review/${post.id}`} key={post.id} className="no-underline">
+            <div className="board-row">
+              <span className="board-title">{post.title}</span>
+              <span className="board-meta">{post.author}</span>
+              <span className="board-meta date">{post.createdAt}</span>
             </div>
           </Link>
         ))}
-        <div>
-          <button
-            style={styles.button}
-            onClick={() => {
-              navigate("/review/write");
-            }}
-          >
-            글쓰기
+
+        <div style={{ padding: "0.8rem 1.2rem", borderTop: "1px solid #f0f0f0", display: "flex", justifyContent: "flex-end" }}>
+          <button className="btn btn-primary" onClick={() => navigate("/review/write")}>
+            + 글쓰기
           </button>
         </div>
       </div>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    width: "80%",
-    margin: "20px auto",
-    marginBottom: "2rem",
-    border: "1px solid #ddd",
-    borderRadius: "8px",
-    overflow: "hidden",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-  },
-  header: {
-    display: "grid",
-    gridTemplateColumns: "4fr 1fr 2fr",
-    backgroundColor: "#f5f5f5",
-    padding: "10px 15px",
-    fontWeight: "bold",
-    fontSize: "16px",
-    borderBottom: "1px solid #ddd",
-    color: "#333",
-  },
-  row: {
-    display: "grid",
-    gridTemplateColumns: "4fr 1fr 2fr",
-    padding: "10px 15px",
-    fontSize: "14px",
-    borderBottom: "1px solid #f0f0f0",
-    color: "#555",
-  },
-  columnTitle: {
-    textAlign: "left",
-    padding: "2px",
-  },
-  columnAuthor: {
-    textAlign: "center",
-    padding: "2px",
-  },
-  columnDate: {
-    textAlign: "right",
-    padding: "2px",
-  },
-  button: {
-    display: "block",
-    float: "right",
-    margin: "1rem",
-    backgroundColor: "#22B8CF",
-    color: "#fff",
-    fontSize: "16px",
-    padding: "10px 20px",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    alignSelf: "flex-end",
-  },
-  buttonHover: {
-    backgroundColor: "#2980b9",
-  },
-};
-
-export default Reviews;
