@@ -16,6 +16,8 @@ import ReviewUpdate from "./pages/ReviewUpdate";
 import QnA from "./pages/QnA";
 import QnADetail from "./pages/QnADetail";
 import QnAUpdate from "./pages/QnAUpdate";
+import Mypage from "./pages/Mypage";
+import MypageSet from "./pages/MypageSet";
 import NoPage from "./pages/NoPage";
 import { useAuthStore } from "./stores/authStore";
 import { authFetch } from "./api/authFetch";
@@ -97,6 +99,8 @@ export default function App() {
           <Route path="QnA" element={<QnA />} />
           <Route path="QnADetail/:id" element={<QnADetail />} />
           <Route path="QnA/up/:id" element={<QnAUpdate />} />
+          <Route path="Mypage" element={<Mypage />} />
+          <Route path="MypageSet" element={<MypageSet />} />
           <Route path="*" element={<NoPage />} />
         </Route>
       </Routes>
