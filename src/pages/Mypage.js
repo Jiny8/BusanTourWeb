@@ -1,148 +1,114 @@
-import React from "react";
-import {
-  useNavigate,
-  Link,
-} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuthStore } from "../stores/authStore";
 
-function Mypage({
-  member,
-  setMember,
-  data,
-  setData,
-  qna,
-  setQna,
-  mytour,
-  setMyTour,
-  position,
-  notice,
-}) {
+export default function Mypage() {
   const navigate = useNavigate();
-  
-  return (
-    <>
-        <img
-          src={member[position].src}
-          alt={member[position].alt}
-          title={member[position].title}
-          width={member[position].width}
-        />
-        <button style={styles.btnStyleMy} onClick={() => navigate("/MypageSet")}>
-            <span>회원정보</span>
-          </button>
-        <div style={styles.container}>
-        <div style={styles.header}>
-          <span style={styles.columnTitle}>나의 여행리뷰</span>
-          <span style={styles.columnDate}>작성일</span>
-        </div>
-          {member[position].name === "admin" ? (
-            <span></span>
-          ) : (
-            <span>
-              <p>
-                  {data.map((i) => (
-                    <div key={i.idx}>
-                      <Link to={"/review/" + i.idx} key={i.idx} className="no-underline">
-                        <div key={i.idx} style={styles.row}>
-                         <span style={styles.columnTitle}>{i.title}</span>
-                         <span style={styles.columnDate}>{i.date}</span>
-                        </div>
-                      </Link>
-                    </div>
-                  ))}
-              </p>
-            </span>
-          )}
-          </div>
+  const { user, accessToken } = useAuthStore();
+  const [reviews, setReviews] = useState([]);
+  const [qnaList, setQnaList] = useState([]);
+  const [bookings, setBookings] = useState([]);
 
-          <div style={styles.container}>
-        <div style={styles.header}>
-          <span style={styles.columnTitle}>나의 문의글</span>
-          <span style={styles.columnDate}>작성일</span>
+  useEffect(() => {
+    if (!user) return;
+    fetch(`http://localhost:8080/reviews?memberId=${user.id}`)
+      .then((r) => r.json()).then(setReviews).catch(console.error);
+    fetch(`http://localhost:8080/qna?memberId=${user.id}`)
+      .then((r) => r.json()).then(setQnaList).catch(console.error);
+    fetch("http://localhost:8080/bookings", {
+      headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+    }).then((r) => r.json()).then((d) => setBookings(Array.isArray(d) ? d : [])).catch(console.error);
+  }, [user, accessToken]);
+
+  return (
+    <div className="page-container">
+
+      {/* 프로필 헤더 */}
+      <div style={{ background: "#fff", borderRadius: 12, padding: "2rem", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: "1.5rem", display: "flex", alignItems: "center", gap: "1.5rem", flexWrap: "wrap" }}>
+        <div style={{ width: 80, height: 80, borderRadius: "50%", background: "linear-gradient(135deg,#22B8CF,#1a9aad)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "2rem", color: "#fff", fontWeight: 700, flexShrink: 0 }}>
+          {user?.id?.charAt(0).toUpperCase()}
         </div>
-          {member[position].name === "admin" ? (
-            <span></span>
-          ) : (
-            <span>
-              {qna.map((i) => (
-             <Link to={"/QnADetail/" + i.idx4} key={i.idx4} className="no-underline">
-              <div key={i.idx4} style={styles.row}>
-              <span style={styles.columnTitle}>{i.title}</span>
-              <span style={styles.columnDate}>{i.date}</span>
-              </div>
-            </Link>
+        <div style={{ flex: 1 }}>
+          <h2 style={{ margin: 0, fontSize: "1.4rem" }}>{user?.id} 님</h2>
+          <p style={{ color: "#888", margin: "0.3rem 0 0", fontSize: "0.9rem" }}>
+            {user?.id === "admin" ? "관리자" : "일반 회원"}
+          </p>
+        </div>
+        <button className="btn btn-outline" onClick={() => navigate("/MypageSet")}>
+          회원정보 수정
+        </button>
+      </div>
+
+      {user?.id === "admin" ? (
+        <div style={{ background: "#fff", borderRadius: 10, padding: "2rem", textAlign: "center", boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}>
+          <p style={{ color: "#888" }}>관리자 계정입니다.</p>
+        </div>
+      ) : (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.2rem" }}>
+
+          <Section title="내 구매정보" count={bookings.length}>
+            {bookings.length === 0
+              ? <Empty text="예약 내역이 없습니다." />
+              : bookings.map((b) => (
+                  <Link to={`/TourBuylist/${b.id}`} key={b.id} className="no-underline">
+                    <div style={listItem}>
+                      {b.tourName}
+                      <span style={badge}>{b.startDate}</span>
+                    </div>
+                  </Link>
                 ))}
-            </span>
-          )}
-          </div>
-    </>
+          </Section>
+
+          <Section title="내 리뷰글" count={reviews.length}>
+            {reviews.length === 0
+              ? <Empty text="작성한 리뷰가 없습니다." />
+              : reviews.map((r) => (
+                  <Link to={`/review/${r.id}`} key={r.id} className="no-underline">
+                    <div style={listItem}>
+                      {r.title}
+                      <span style={badge}>{r.createdAt}</span>
+                    </div>
+                  </Link>
+                ))}
+          </Section>
+
+          <Section title="내 문의글" count={qnaList.length}>
+            {qnaList.length === 0
+              ? <Empty text="작성한 문의글이 없습니다." />
+              : qnaList.map((q) => (
+                  <Link to={`/QnADetail/${q.id}`} key={q.id} className="no-underline">
+                    <div style={listItem}>{q.title}</div>
+                  </Link>
+                ))}
+          </Section>
+
+        </div>
+      )}
+    </div>
   );
 }
 
-const styles = {
-  container: {
-    width: "80%",
-    margin: "20px auto",
-    marginBottom: "2rem",
-    border: "1px solid #ddd",
-    borderRadius: "8px",
-    overflow: "hidden",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-  },
-  header: {
-    display: "grid",
-    gridTemplateColumns: "4fr 1fr 2fr",
-    backgroundColor: "#f5f5f5",
-    padding: "10px 15px",
-    fontWeight: "bold",
-    fontSize: "16px",
-    borderBottom: "1px solid #ddd",
-    color: "#333",
-  },
-  row: {
-    display: "grid",
-    gridTemplateColumns: "4fr 1fr 2fr",
-    padding: "10px 15px",
-    fontSize: "14px",
-    borderBottom: "1px solid #f0f0f0",
-    color: "#555",
-  },
-  columnTitle: {
-    textAlign: "left",
-    padding: "2px",
-  },
-  columnAuthor: {
-    textAlign: "center",
-    padding: "2px",
-  },
-  columnDate: {
-    textAlign: "right",
-    padding: "2px",
-  },
-  button: {
-    display: "block",
-    float: "right",
-    margin: "1rem",
-    backgroundColor: "#22B8CF",
-    color: "#fff",
-    fontSize: "16px",
-    padding: "10px 20px",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    alignSelf: "flex-end",
-  },
-  buttonHover: {
-    backgroundColor: "#2980b9",
-  },
-  btnStyleMy: {
-    color: "white",
-    background: "#22B8CF",
-    padding: ".3rem .6rem",
-    margin: ".2rem",
-    border: "1px #22B8CF",
-    borderRadius: ".40rem",
-    fontSize: "1rem",
-  },
-};
+function Section({ title, count, children }) {
+  return (
+    <div style={{ background: "#fff", borderRadius: 10, padding: "1.5rem", boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+        <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: 700 }}>{title}</h3>
+        <span style={{ background: "#e8f9fc", color: "#22B8CF", borderRadius: 20, padding: "0.15rem 0.6rem", fontSize: "0.8rem", fontWeight: 700 }}>
+          {count}
+        </span>
+      </div>
+      {children}
+    </div>
+  );
+}
 
-export default Mypage;
+function Empty({ text }) {
+  return <p style={{ color: "#bbb", fontSize: "0.9rem", textAlign: "center", padding: "1rem 0" }}>{text}</p>;
+}
+
+const listItem = {
+  padding: "0.7rem 0.5rem", borderBottom: "1px solid #f4f4f4",
+  fontSize: "0.95rem", color: "#333", display: "flex", justifyContent: "space-between",
+  alignItems: "center", cursor: "pointer", borderRadius: 6, transition: "background 0.15s",
+};
+const badge = { fontSize: "0.78rem", color: "#aaa", whiteSpace: "nowrap", marginLeft: "0.5rem" };
