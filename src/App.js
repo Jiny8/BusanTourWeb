@@ -56,8 +56,9 @@ const tourinfo = [
 ];
 
 function PrivateRoute({ children }) {
-  const { isAuthenticated } = useAuthStore();
-  return isAuthenticated ? children : <Navigate to="/login" replace />;
+  //const { isAuthenticated } = useAuthStore();
+  //return isAuthenticated ? children : <Navigate to="/login" replace />;
+  return children
 }
 
 export default function App() {

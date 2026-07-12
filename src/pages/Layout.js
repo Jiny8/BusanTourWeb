@@ -1,202 +1,177 @@
-import React from 'react'
-import { useState, useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
-import titleImage from "../assets/images/title.png"
-const Layout = ({ member, position }) => {
-  
-  const CategoriesBlock = styled.div`  
-    display: flex;
-    justify-content: center;   
-    margin: 0 auto;  
-    padding-top: 10px;
-    padding-bottom: 10px;
-    @media screen and (max-width: 768px) {    
-      width: 100%;    
-      overflow-x: auto;  
-    }`; 
-    const Category = styled(NavLink)`  
-      font-size: 1.125rem;  
-      cursor: pointer;  
-      white-space: pre;
-      text-decoration: none;  
-      color: inherit;  
-      padding-bottom: 0.25rem;   
-      &:hover {    
-        color: #495057;
-      }
-      &.active {    
-        font-weight: 600;    
-        border-bottom: 2px solid #22b8cf;    
-        color: #22b8cf;    
-        &:hover {      
-          color: #3bc9db;    
-        }  
-      }
-      & + & {    
-        margin-left: 6rem;  
-      }`;
+import React, { useState, useEffect } from "react";
+import { Outlet, useNavigate, useLocation, NavLink } from "react-router-dom";
+import { useAuthStore } from "../stores/authStore";
+import titleImage from "../assets/images/title.png";
+
+const categories = [
+  { title: "HOME", link: "/" },
+  { title: "추천여행", link: "/TourList" },
+  { title: "축제·공연", link: "/TourInfo" },
+  { title: "여행리뷰", link: "/reviews" },
+  { title: "QnA", link: "/QnA" },
+  { title: "마이페이지", link: "/Mypage" },
+];
+
+// ===== 스타일 상수 (컴포넌트보다 먼저 정의) =====
+const navStyle = {
+  backgroundColor: "#fff",
+  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+  position: "sticky",
+  top: 0,
+  zIndex: 100,
+};
+const navInner = {
+  maxWidth: 1100, margin: "0 auto", padding: "0 1.2rem", height: 68,
+  display: "flex", alignItems: "center", justifyContent: "space-between",
+};
+const logoBtn = { background: "none", border: "none", cursor: "pointer", padding: 0 };
+const linkStyle = {
+  padding: "0.4rem 0.75rem", borderRadius: 8, fontSize: "0.95rem",
+  fontWeight: 500, color: "#444", whiteSpace: "nowrap", transition: "background 0.15s",
+};
+const linkActive = { color: "#22B8CF", fontWeight: 700, background: "rgba(34,184,207,0.1)" };
+const userLabel = { fontSize: "0.9rem", color: "#555", fontWeight: 600, whiteSpace: "nowrap" };
+const primaryBtn = {
+  background: "#22B8CF", color: "#fff", border: "none", borderRadius: 8,
+  padding: "0.45rem 1rem", fontSize: "0.9rem", cursor: "pointer",
+  fontFamily: "inherit", whiteSpace: "nowrap",
+};
+const hamburgerBtn = {
+  display: "flex", flexDirection: "column", gap: 5, background: "none", border: "none",
+  cursor: "pointer", padding: "4px",
+};
+const bar = (open, i) => ({
+  display: "block", width: 24, height: 2.5, borderRadius: 2, background: "#333",
+  transition: "transform 0.2s, opacity 0.2s",
+  transform: open
+    ? i === 0 ? "translateY(7.5px) rotate(45deg)"
+    : i === 2 ? "translateY(-7.5px) rotate(-45deg)" : "none"
+    : "none",
+  opacity: open && i === 1 ? 0 : 1,
+});
+const mobileMenu = {
+  background: "#fff", borderTop: "1px solid #eee", display: "flex", flexDirection: "column",
+};
+const mobileLink = {
+  padding: "0.9rem 1.5rem", fontSize: "1rem", color: "#333",
+  borderBottom: "1px solid #f4f4f4", fontWeight: 500,
+};
+const mobileLinkActive = { color: "#22B8CF", fontWeight: 700, background: "rgba(34,184,207,0.07)" };
+const footerStyle = {
+  background: "#1e2532", color: "#ccc", padding: "2rem 1.2rem 1rem",
+  fontSize: "0.85rem", lineHeight: 1.8,
+};
+
+export default function Layout() {
+  const { user, logout } = useAuthStore();
   const navigate = useNavigate();
-  const [logname, setLogname] = useState("로그인");
+  const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const Categories = () => {  
-    const categories = [
-      { title:"HOME", link:"/" },
-      { title:"추천여행", link:"/TourList" },
-      { title:"축제.공연", link:"/TourInfo" },
-      { title:"여행리뷰", link:"/Reviews" },
-      { title:"QnA", link:"/QnA" },
-      { title:"마이페이지", link: "mypage"}
-    ];
+  useEffect(() => { setMenuOpen(false); }, [location.pathname]);
 
-    return (    
-      <CategoriesBlock>      
-        {categories.map(c => (        
-          <Category 
-            key={c.name} 
-            className={({ isActive }) => (isActive ? 'active' : undefined)}
-            to={`${c.link}`} >
-              <span>{c.title}</span>
-            </Category>
-        ))}    
-      </CategoriesBlock>  
-    );
-  }
-  useEffect(() => {
-    //let member = JSON.parse(sessionStorage.getItem("member"));
-  }, []);
-
-  const login = () => {
-    if (position == 0) {
-      navigate("/login");
-      return alert("로그인 정보가 없습니다. 로그인 완료해주세요.");
-    } else if (position != 0) {
-      navigate("/Mypage");
-    }
-  };
-
-  const logout = () => {
-    let member = JSON.parse(sessionStorage.getItem("member"));
-    member?.id === "admin" || member?.id === "user"
-      ? sessionStorage.removeItem("member")
-      : navigate("/login");
-  };
+  const handleLogout = () => { logout(); navigate("/login"); };
 
   return (
-    <>
-      <nav>
-        <p>
-          <button
-            style={btnStyleLogin}
-            onClick={() => {
-              logout();
-            }}
-          >
-            {member[position].ID == "" ? "로그인" : "로그아웃"}
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      <style>{`
+        .nav-links { display: flex; }
+        .hamburger { display: none !important; }
+        .nav-user-logout { display: block; }
+        .nav-user-name { display: block; }
+        @media (max-width: 768px) {
+          .nav-links { display: none; }
+          .hamburger { display: flex !important; }
+          .nav-user-logout { display: none; }
+          .nav-user-name { display: none; }
+        }
+      `}</style>
+
+      {/* ===== NAV ===== */}
+      <nav style={navStyle}>
+        <div style={navInner}>
+          <button style={logoBtn} onClick={() => navigate("/")}>
+            <img src={titleImage} alt="부산어때" style={{ height: 52, width: "auto" }} />
           </button>
 
-          <span
-            style={{ float: "right", padding: "1.5rem 1rem 1.5rem 1.5rem", fontWeight: "bold" }}
-          >
-            {member[position].name}
-          </span>
-        </p>
-        <span>
-          <button style={btnStyleHome} onClick={() => navigate("/")}>
-            <img src={titleImage} alt="부산어때" width={300} height={120}/>
-          </button>
-        </span>
-        <div>
-            <Categories />
+          <div className="nav-links" style={{ gap: "0.2rem", alignItems: "center" }}>
+            {categories.map((c) => (
+              <NavLink
+                key={c.title}
+                to={c.link}
+                end={c.link === "/"}
+                style={({ isActive }) => ({ ...linkStyle, ...(isActive ? linkActive : {}) })}
+              >
+                {c.title}
+              </NavLink>
+            ))}
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+            <span className="nav-user-name" style={userLabel}>{user?.id}</span>
+            <button className="nav-user-logout" style={primaryBtn} onClick={handleLogout}>
+              로그아웃
+            </button>
+            <button
+              className="hamburger"
+              style={hamburgerBtn}
+              onClick={() => setMenuOpen((o) => !o)}
+              aria-label="메뉴"
+            >
+              <span style={bar(menuOpen, 0)} />
+              <span style={bar(menuOpen, 1)} />
+              <span style={bar(menuOpen, 2)} />
+            </button>
+          </div>
         </div>
+
+        {/* Mobile 드롭다운 */}
+        {menuOpen && (
+          <div style={mobileMenu}>
+            {categories.map((c) => (
+              <NavLink
+                key={c.title}
+                to={c.link}
+                end={c.link === "/"}
+                style={({ isActive }) => ({ ...mobileLink, ...(isActive ? mobileLinkActive : {}) })}
+                onClick={() => setMenuOpen(false)}
+              >
+                {c.title}
+              </NavLink>
+            ))}
+            <div style={{ padding: "0.7rem 1.5rem 1rem" }}>
+              {user && <p style={{ fontSize: "0.85rem", color: "#888", marginBottom: "0.5rem" }}>{user.id} 님</p>}
+              <button style={{ ...primaryBtn, width: "100%" }} onClick={handleLogout}>
+                로그아웃
+              </button>
+            </div>
+          </div>
+        )}
       </nav>
-      <div>
-      </div>
-      <Outlet />
-      {/* <Outlet /> 의 아래 작성된 내용은 홈페이지의 하단*/}
-      <footer style={styles.footer}>
-      <div style={styles.container}>
-        <div style={styles.infoSection}>
-          <h4 style={styles.heading}>회사 정보</h4>
-          <p>대표: 박효진</p>
-          <p>주소: 부산시 연제구 연제동</p>
+
+      {/* ===== Main ===== */}
+      <main style={{ flex: 1 }}>
+        <Outlet />
+      </main>
+
+      {/* ===== Footer ===== */}
+      <footer style={footerStyle}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", gap: "3rem", flexWrap: "wrap", marginBottom: "1rem" }}>
+          <div>
+            <p style={{ color: "#fff", fontWeight: 700, marginBottom: "0.4rem" }}>부산어때</p>
+            <p>대표: 박효진 | 주소: 부산시 연제구 연제동</p>
+            <p>사업자등록번호: 606-81-05296</p>
+          </div>
+          <div>
+            <p style={{ color: "#fff", fontWeight: 700, marginBottom: "0.4rem" }}>고객센터</p>
+            <p>전화: 070-1235-5678 (09:00~18:00)</p>
+            <p>이메일: busan@example.com</p>
+          </div>
         </div>
-        <div style={styles.contactSection}>
-          <h4 style={styles.heading}>문의</h4>
-          <p>전화: 070-1235-5678</p>
-          <p>이메일: busan@example.com</p>
-        </div>
-        <div style={styles.copyright}>
-          <p>&copy; 2025 Company Name. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
-    </>
+        <p style={{ textAlign: "center", borderTop: "1px solid #2e3545", paddingTop: "1rem", color: "#888", fontSize: "0.8rem" }}>
+          © 2025 부산어때. All rights reserved.
+        </p>
+      </footer>
+    </div>
   );
-};
-
-const btnStyleLogin = {
-  float: "right",
-  color: "white",
-  background: "#22B8CF",
-  padding: ".3rem 1rem",
-  marginTop: "1rem",
-  marginRight: "3rem",
-  border: "1px #22B8CF",
-  borderRadius: ".40rem",
-  fontSize: "1rem",
-  lineHeight: 1.5,
-  cursor: "pointer"
-};
-
-const btnStyleHome = {
-  textalign: "center",
-  color: "#22B8CF",
-  background: "white",
-  padding: "0.1rem 3rem",
-  margin: "0.5rem",
-  border: "1px #22B8CF",
-  borderRadius: ".40rem",
-  font: "2.5rem italic bold",
-  lineHeight: 1,
-  cursor: "pointer",
-};
-
-const styles = {
-  footer: {
-    backgroundColor: "#282c34",
-    color: "#fff",
-    padding: "20px 0",
-    textAlign: "center",
-    fontSize: "14px",
-    lineHeight: "1.6",
-  },
-  container: {
-    maxWidth: "1200px",
-    margin: "0 auto",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  infoSection: {
-    marginBottom: "20px",
-  },
-  contactSection: {
-    marginBottom: "20px",
-  },
-  heading: {
-    fontSize: "16px",
-    fontWeight: "bold",
-    marginBottom: "10px",
-  },
-  copyright: {
-    borderTop: "1px solid #444",
-    marginTop: "20px",
-    paddingTop: "10px",
-    fontSize: "12px",
-    color: "#aaa",
-  },
-};
-
-export default Layout;
+}
