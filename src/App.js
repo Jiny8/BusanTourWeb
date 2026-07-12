@@ -13,6 +13,9 @@ import Reviews from "./pages/Reviews";
 import ReviewDetail from "./pages/ReviewDetail";
 import ReviewWrite from "./pages/ReviewWrite";
 import ReviewUpdate from "./pages/ReviewUpdate";
+import QnA from "./pages/QnA";
+import QnADetail from "./pages/QnADetail";
+import QnAUpdate from "./pages/QnAUpdate";
 import NoPage from "./pages/NoPage";
 import { useAuthStore } from "./stores/authStore";
 import { authFetch } from "./api/authFetch";
@@ -91,6 +94,9 @@ export default function App() {
           <Route path="review/:idx" element={<ReviewDetail />} />
           <Route path="review/write" element={<ReviewWrite />} />
           <Route path="review/up/:idx" element={<ReviewUpdate />} />
+          <Route path="QnA" element={<QnA />} />
+          <Route path="QnADetail/:id" element={<QnADetail />} />
+          <Route path="QnA/up/:id" element={<QnAUpdate />} />
           <Route path="*" element={<NoPage />} />
         </Route>
       </Routes>
