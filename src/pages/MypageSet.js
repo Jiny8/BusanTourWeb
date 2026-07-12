@@ -1,144 +1,81 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../stores/authStore";
 
-function MypageSet({ member, setMember, position }) {
+export default function MypageSet() {
   const navigate = useNavigate();
-  const [id, setId] = useState(member[position].ID);
-  const [pw, setPw] = useState(member[position].PW);
-  const [name, setName] = useState(member[position].name);
-  const [phone, setPhone] = useState(member[position].phone);
-  const [address, setAddress] = useState(member[position].address);
-  const [bank, setBank] = useState(member[position].bank);
-  const [account, setAccount] = useState(member[position].account);
-  const Update = () => {
-    /*myinfo는 배열형태가 아님, 수정기능 구현할때 주의할것(*[] 대괄호미사용)*/
-    let tmp = member;
-    tmp = {
-      ...tmp,
-      PW: pw,
-      name: name,
-      phone: phone,
-      address: address,
-      bank: bank,
-      account: account,
-    };
-    setMember({ ...tmp });
+  const { user, accessToken } = useAuthStore();
+  const [pw, setPw] = useState("");
+  const [pw2, setPw2] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const update = async (e) => {
+    e.preventDefault();
+    setError(""); setSuccess("");
+    if (!pw.trim()) { setError("새 비밀번호를 입력해주세요."); return; }
+    if (pw.length < 4) { setError("비밀번호는 4자 이상 입력해주세요."); return; }
+    if (pw !== pw2) { setError("비밀번호가 일치하지 않습니다."); return; }
+
+    try {
+      const res = await fetch(`http://localhost:8080/members/${user.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
+        body: JSON.stringify({ pw }),
+      });
+      if (res.ok) {
+        setSuccess("비밀번호가 변경되었습니다.");
+        setPw(""); setPw2("");
+      } else {
+        setError("수정에 실패했습니다.");
+      }
+    } catch {
+      setError("서버 오류가 발생했습니다.");
+    }
   };
 
   return (
-    <div style={styles.container}>
-        <div style={styles.header}></div>
-      <p>
-        <img
-          src={member[position].src}
-          alt={member[position].alt}
-          title={member[position].title}
-          width={member[position].width}
-        />
-      </p>
-      <p>
-        <h1>{member[position].name} 님</h1>
-      </p>
-      <p>아이디 {member[position].ID}</p>
-      <p>
-        비밀번호
-        <input
-          onChange={(e) => {
-            setPw(e.target.value);
-          }}
-          value={pw}
-        />
-      </p>
-      <p>
-        연락처
-        <input
-          onChange={(e) => {
-            setPhone(e.target.value);
-          }}
-          value={phone}
-        />
-      </p>
-      <p>
-        주 소
-        <input
-          onChange={(e) => {
-            setAddress(e.target.value);
-          }}
-          value={address}
-        />
-      </p>
+    <div className="page-container-sm">
+      <h2 className="section-title" style={{ marginBottom: "1.5rem" }}>회원정보 수정</h2>
 
-      <button style={styles.button} onClick={() => navigate("/Mypage")}>
-        <span>취소</span>
-      </button>
-      <button
-        style={styles.button}
-        onClick={() => {
-          navigate("/Mypage");
-          Update();
-        }}
-      >
-        <span>저장</span>
-      </button>
+      <div style={{ background: "#fff", borderRadius: 12, overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}>
+        {/* 프로필 헤더 */}
+        <div style={{ background: "linear-gradient(135deg,#22B8CF,#1a9aad)", padding: "1.8rem 2rem", display: "flex", alignItems: "center", gap: "1.2rem" }}>
+          <div style={{ width: 64, height: 64, borderRadius: "50%", background: "rgba(255,255,255,0.25)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.6rem", color: "#fff", fontWeight: 700, flexShrink: 0 }}>
+            {user?.id?.charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <p style={{ margin: 0, color: "rgba(255,255,255,0.8)", fontSize: "0.85rem" }}>아이디</p>
+            <h3 style={{ margin: 0, color: "#fff", fontSize: "1.3rem" }}>{user?.id}</h3>
+          </div>
+        </div>
+
+        {/* 폼 */}
+        <div style={{ padding: "2rem" }}>
+          {error && <div className="auth-error">{error}</div>}
+          {success && <div className="auth-success">{success}</div>}
+
+          <form onSubmit={update}>
+            <div className="form-group">
+              <label>새 비밀번호</label>
+              <input className="form-input" type="password" placeholder="4자 이상 입력"
+                value={pw} onChange={(e) => setPw(e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>비밀번호 확인</label>
+              <input className="form-input" type="password" placeholder="비밀번호 재입력"
+                value={pw2} onChange={(e) => setPw2(e.target.value)} />
+            </div>
+            <div style={{ display: "flex", gap: "0.7rem", justifyContent: "flex-end", marginTop: "0.5rem" }}>
+              <button type="button" className="btn btn-outline" onClick={() => navigate("/Mypage")}>취소</button>
+              <button type="submit" className="btn btn-primary">저장</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }
-const styles = {
-  container: {
-    width: "30%",
-    margin: "0 auto",
-    marginBottom: "2rem",
-    border: "1px solid #ddd",
-    borderRadius: "8px",
-    overflow: "hidden",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-    textAlign: "center",
-  },
-  header: {
-    display: "grid",
-    gridTemplateColumns: "4fr 1fr 2fr",
-    backgroundColor: "#f5f5f5",
-    padding: "10px 15px",
-    fontWeight: "bold",
-    fontSize: "16px",
-    borderBottom: "1px solid #ddd",
-    color: "#333",
-  },
-  row: {
-    display: "grid",
-    gridTemplateColumns: "4fr 1fr 2fr",
-    padding: "10px 15px",
-    fontSize: "14px",
-    borderBottom: "1px solid #f0f0f0",
-    color: "#555",
-  },
-  columnTitle: {
-    textAlign: "left",
-    padding: "2px",
-  },
-  columnAuthor: {
-    textAlign: "center",
-    padding: "2px",
-  },
-  columnDate: {
-    textAlign: "right",
-    padding: "2px",
-  },
-  button: {
-    display: "block",
-    float: "right",
-    margin: "1rem",
-    backgroundColor: "#22B8CF",
-    color: "#fff",
-    fontSize: "16px",
-    padding: "10px 20px",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    alignSelf: "flex-end",
-  },
-  buttonHover: {
-    backgroundColor: "#2980b9",
-  },
-};
-export default MypageSet;
