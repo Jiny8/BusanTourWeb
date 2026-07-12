@@ -1,228 +1,118 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import "../styles/QnA.css";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useAuthStore } from "../stores/authStore";
 
-function QnA({ qna, setQna }) {
+const FAQS = [
+  { q: "여행 취소/환불 문의", a: "항공권 전체취소는 온라인/모바일 예약내역(마이페이지)에서 가능합니다. 카드환불은 약 5~7일 소요됩니다." },
+  { q: "결제 방법", a: "무통장입금, ARS 카드결제, 인터넷 결제 세 가지 방식으로 결제 가능합니다." },
+  { q: "e-ticket 출력", a: "예약 및 결제 후 발권 완료 시 마이페이지에서 출력 가능합니다." },
+  { q: "항공시간 및 출발지 변경", a: "항공시간 및 출발지 변경은 가능하나 요금 차액이 발생할 수 있습니다." },
+  { q: "기존 예약 고객정보 및 날짜 변경", a: "발권 전이라면 온라인상담을 통해 취소료 없이 변경 가능합니다. 발권 후에는 패널티가 적용됩니다." },
+];
 
+export default function QnA() {
+  const [qna, setQna] = useState([]);
   const [title, setTitle] = useState("");
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
-  const Add = () => {
-    setQna([
-      ...qna,
-      {
-        idx4: qna.length,
-        name: name,
-        title: title,
-        content: content,
-      },
-    ]);
-    setTitle("");
-    setName("");
-    setContent("");
-  };
- 
-  const navigate = useNavigate();
-  return (
-    <>
-         <div style={styles.container}>
-              <div style={styles.header}>
-                <span style={styles.columnTitle}>작성번호</span>
-                <span style={styles.columnAuthor}>작성자</span>
-                <span style={styles.columnDate}>글제목</span>
-              </div>
-              {qna.map((i) => (
-                <Link
-                  to={"/QnADetail/" + i.idx4}
-                  key={i.idx4}
-                  className="no-underline"
-                >
-                  <div key={i.idx} style={styles.row}>
-                    <span style={styles.columnTitle}>{i.idx4}</span>
-                    <span style={styles.columnAuthor}>{i.name}</span>
-                    <span style={styles.columnDate}>{i.title}</span>
-                  </div>
-                </Link>
-              ))}
-         </div>
+  const [openFaq, setOpenFaq] = useState(null);
+  const { accessToken } = useAuthStore();
 
-      <div style={styles.containerWrite}>
-      <h2 style={styles.headerWrite}>문의글작성 </h2>
-      <div style={styles.form}>
-        <div style={styles.formGroup}>
-          <label htmlFor="title" style={styles.label}>
-            제목
-          </label>
-          <input
-            type="text"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="제목을 입력하세요"
-            style={styles.input}
-          />
-        </div>
-        <div style={styles.formGroup}>
-          <label htmlFor="title" style={styles.label}>
-            작성자
-          </label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="작성자 이름을 입력하세요"
-            style={styles.input}
-          />
-        </div>
-        <div style={styles.formGroup}>
-          <label htmlFor="content" style={styles.label}>
-            내용
-          </label>
-          <textarea
-            id="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="내용을 입력하세요"
-            style={styles.textarea}
-          />
-        </div>
-        <button
-          style={styles.button}
-          onClick={() => {
-            alert("문의글을 저장하였습니다.");
-            Add();
-            navigate("/QnA");
-          }}
-        >
-          작성완료
-        </button>
+  useEffect(() => {
+    fetch("http://localhost:8080/qna")
+      .then((r) => r.json())
+      .then(setQna)
+      .catch(console.error);
+  }, []);
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if (!title.trim() || !name.trim()) return;
+    const res = await fetch("http://localhost:8080/qna/new", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      },
+      body: JSON.stringify({ name, title, content }),
+    });
+    const saved = await res.json();
+    setQna((prev) => [...prev, saved]);
+    setTitle(""); setName(""); setContent("");
+  };
+
+  return (
+    <div className="page-container">
+
+      {/* FAQ 아코디언 */}
+      <div style={{ background: "#fff", borderRadius: 10, padding: "1.5rem 2rem", boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: "2rem" }}>
+        <h2 className="section-title" style={{ marginBottom: "1.2rem" }}>자주 묻는 질문 TOP 5</h2>
+        {FAQS.map((faq, i) => (
+          <div key={i} style={{ borderBottom: "1px solid #f0f0f0" }}>
+            <button
+              onClick={() => setOpenFaq(openFaq === i ? null : i)}
+              style={{ width: "100%", textAlign: "left", padding: "1rem 0", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: "1rem", fontWeight: 600, color: "#333", display: "flex", justifyContent: "space-between" }}
+            >
+              <span>Q. {faq.q}</span>
+              <span style={{ color: "#22B8CF" }}>{openFaq === i ? "▲" : "▼"}</span>
+            </button>
+            {openFaq === i && (
+              <div style={{ padding: "0.6rem 0 1rem 1rem", color: "#555", fontSize: "0.95rem", lineHeight: 1.7, background: "#f8fdfe", borderRadius: 6 }}>
+                {faq.a}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
+
+      {/* 문의 목록 */}
+      <div className="section-header">
+        <h2 className="section-title">문의 게시판</h2>
+      </div>
+      <div className="board-wrap" style={{ marginBottom: "2rem" }}>
+        <div className="board-header">
+          <span>제목</span>
+          <span>작성자</span>
+          <span className="board-meta date">날짜</span>
+        </div>
+        {qna.length === 0 && (
+          <div style={{ padding: "2rem", textAlign: "center", color: "#aaa" }}>등록된 문의가 없습니다.</div>
+        )}
+        {qna.map((item) => (
+          <Link to={`/QnADetail/${item.id}`} key={item.id} className="no-underline">
+            <div className="board-row">
+              <span className="board-title">{item.title}</span>
+              <span className="board-meta">{item.name}</span>
+              <span className="board-meta date">{item.createdAt}</span>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {/* 인라인 문의 작성 */}
+      <div style={{ background: "#fff", borderRadius: 10, padding: "1.5rem 2rem", boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}>
+        <h3 className="section-title" style={{ marginBottom: "1.2rem" }}>문의 작성</h3>
+        <form onSubmit={submit}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+            <div className="form-group">
+              <label>제목</label>
+              <input className="form-input" placeholder="제목" value={title} onChange={(e) => setTitle(e.target.value)} required />
+            </div>
+            <div className="form-group">
+              <label>작성자</label>
+              <input className="form-input" placeholder="이름" value={name} onChange={(e) => setName(e.target.value)} required />
+            </div>
+          </div>
+          <div className="form-group">
+            <label>내용</label>
+            <textarea className="form-input" placeholder="문의 내용을 입력하세요" value={content} onChange={(e) => setContent(e.target.value)} />
+          </div>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <button type="submit" className="btn btn-primary">문의하기</button>
+          </div>
+        </form>
+      </div>
+
     </div>
-     
-    </>
   );
 }
-
-const styles = {
-  btnStyle: {
-    color: "white",
-    background: "#22B8CF",
-    padding: ".3rem .6rem",
-    margin: "2rem",
-    border: "1px #22B8CF",
-    borderRadius: ".40rem",
-    fontSize: "1rem",
-  },
-  btnStyleInput: {
-    padding: "0rem 2rem",
-  },
-  container: {
-    width: "80%",
-    margin: "20px auto",
-    marginBottom: "2rem",
-    border: "1px solid #ddd",
-    borderRadius: "8px",
-    overflow: "hidden",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-  },
-  containerWrite: {
-    width: "78%",
-    margin: "20px auto",
-    marginBottom: "2rem",
-    border: "1px solid #ddd",
-    borderRadius: "8px",
-    padding: "0px 20px 20px 20px",
-    overflow: "hidden",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-  },
-  headerWrite: {
-    fontSize: "24px",
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: "20px",
-    textAlign: "center",
-  },
-  header: {
-    display: "grid",
-    gridTemplateColumns: "4fr 1fr 2fr",
-    backgroundColor: "#f5f5f5",
-    padding: "10px 15px",
-    fontWeight: "bold",
-    fontSize: "16px",
-    borderBottom: "1px solid #ddd",
-    color: "#333",
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  formGroup: {
-    marginBottom: "20px",
-  },
-  label: {
-    display: "block",
-    fontSize: "16px",
-    fontWeight: "bold",
-    marginBottom: "8px",
-    color: "#555",
-  },
-  textarea: {
-    width: "100%",
-    height: "150px",
-    padding: "10px",
-    fontSize: "14px",
-    border: "1px solid #ddd",
-    borderRadius: "5px",
-    outline: "none",
-    resize: "vertical",
-    boxSizing: "border-box",
-  },
-  input: {
-    width: "100%",
-    padding: "10px",
-    fontSize: "14px",
-    border: "1px solid #ddd",
-    borderRadius: "5px",
-    outline: "none",
-    boxSizing: "border-box",
-  },
-  row: {
-    display: "grid",
-    gridTemplateColumns: "4fr 1fr 2fr",
-    padding: "10px 15px",
-    fontSize: "14px",
-    borderBottom: "1px solid #f0f0f0",
-    color: "#555",
-  },
-  columnTitle: {
-    textAlign: "left",
-    padding: "2px",
-  },
-  columnAuthor: {
-    textAlign: "center",
-    padding: "2px",
-  },
-  columnDate: {
-    textAlign: "right",
-    padding: "2px",
-  },
-  button: {
-    display: "block",
-    float: "right",
-    margin: "1rem",
-    backgroundColor: "#22B8CF",
-    color: "#fff",
-    fontSize: "16px",
-    padding: "10px 20px",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    alignSelf: "flex-end",
-  },
-  buttonHover: {
-    backgroundColor: "#2980b9",
-  },
-};
-
-export default QnA;
